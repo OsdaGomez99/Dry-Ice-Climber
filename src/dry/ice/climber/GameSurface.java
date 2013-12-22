@@ -4,7 +4,9 @@
  */
 package dry.ice.climber;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import javax.swing.JPanel;
 
 /**
@@ -13,9 +15,18 @@ import javax.swing.JPanel;
  */
 public class GameSurface extends JPanel {
     
+    private DryIceClimber c;
+    
+    public GameSurface(DryIceClimber game) {
+        c = game;
+    }
+    
     @Override
     public void paintComponent(Graphics g) {
-        
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 0, DryIceClimber.SCREEN_WIDTH, DryIceClimber.SCREEN_HEIGHT);
+        c.paintGameObjects(g2d);
     }
     
 }
