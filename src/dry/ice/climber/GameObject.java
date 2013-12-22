@@ -39,10 +39,13 @@ public class GameObject extends Rectangle {
         vy = new_vy;
     }
     
-    public void paint(Graphics2D g) {
+    public void updatePhysics() {
         x += vx;
         y += vy;
-        
+        vy++;
+    }
+    
+    public void paint(Graphics2D g) {
         g.drawImage(imageStates[state][frame], x, y, null);
         frame = (frame+1) % imageStates[state].length;
     }
