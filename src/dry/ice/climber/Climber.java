@@ -4,7 +4,7 @@
  */
 package dry.ice.climber;
 
-import java.awt.image.BufferedImage;
+import java.awt.Image;
 import javax.swing.ImageIcon;
 
 /**
@@ -18,29 +18,29 @@ public class Climber extends GameObject {
     
     public Climber(int x, int y) {
         super(x,y);
-        
+        state = JUMPING_RIGHT;
         width = 20;
         height = 27;
         
-        imageStates = new BufferedImage[5][];
-        imageStates[STANDING] = new BufferedImage[24];
-        imageStates[RUNNING_RIGHT] = new BufferedImage[24];
-        imageStates[RUNNING_LEFT] = new BufferedImage[24];
-        imageStates[JUMPING_RIGHT] = new BufferedImage[24];
-        imageStates[JUMPING_LEFT] = new BufferedImage[24];
+        imageStates = new Image[5][];
+        imageStates[STANDING] = new Image[1];
+        imageStates[RUNNING_RIGHT] = new Image[1];
+        imageStates[RUNNING_LEFT] = new Image[1];
+        imageStates[JUMPING_RIGHT] = new Image[2];
+        imageStates[JUMPING_LEFT] = new Image[2];
         
         for(int state_id = 0; state_id < imageStates.length; state_id++) {
-            BufferedImage[] state = imageStates[state_id];
+            Image[] state = imageStates[state_id];
             String name = "";
             switch(state_id) {
                 case STANDING:
-                    name = "running";
+                    name = "standing";
                     break;
                 case RUNNING_RIGHT:
-                    name = "standing_right";
+                    name = "running_right";
                     break;
                 case RUNNING_LEFT:
-                    name = "standing_left";
+                    name = "running_left";
                     break;
                 case JUMPING_RIGHT:
                     name = "jumping_left";
@@ -50,7 +50,7 @@ public class Climber extends GameObject {
                     break;
             }
             for(int frame_id = 0; frame_id < state.length; frame_id++) {
-                state[frame_id] = (BufferedImage) new ImageIcon(this.getClass().getResource(name+frame_id+".png")).getImage();
+                state[frame_id] = new ImageIcon(this.getClass().getResource(name+frame_id+".png")).getImage();
             }
         }
     }

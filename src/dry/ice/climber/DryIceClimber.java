@@ -30,7 +30,6 @@ public class DryIceClimber {
     
     public void go() {
         gameFrame = new JFrame("Dry Ice Climber");
-        gameFrame.setVisible(true);
         gameFrame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         gameFrame.setLocationRelativeTo(null);
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -39,11 +38,13 @@ public class DryIceClimber {
         s.addKeyListener(new InputListener());
         gameFrame.add(s);
         
-        a = new Climber(SCREEN_WIDTH/2, SCREEN_HEIGHT-20);
-        b = new Climber(SCREEN_WIDTH/2, SCREEN_HEIGHT-20);
+        a = new Climber(30, 50);
+        b = new Climber(90, 50);
+        
+        gameFrame.setVisible(true);
         
         Timer t = new Timer();
-        t.scheduleAtFixedRate(new GameUpdater(), 1000/30, 10);
+        t.scheduleAtFixedRate(new GameUpdater(), 100, 1000/30);
     }    
     
     public void paintGameObjects(Graphics2D g) {
