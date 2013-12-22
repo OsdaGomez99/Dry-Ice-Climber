@@ -35,8 +35,8 @@ public class DryIceClimber {
         gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         s = new GameSurface(this);
-        s.addKeyListener(new InputListener());
         gameFrame.add(s);
+        gameFrame.addKeyListener(new InputListener());
         
         a = new Climber(30, 50);
         b = new Climber(90, 50);
@@ -62,7 +62,32 @@ public class DryIceClimber {
     private class InputListener implements KeyListener {
         @Override
         public void keyPressed(KeyEvent e) {
+            int key = e.getKeyCode();
+            if(key == KeyEvent.VK_UP) {
+                a.setVY(-5);
+            }
+            else if(key == KeyEvent.VK_DOWN) {
+                a.setVY(5);
+            }
+            if(key == KeyEvent.VK_LEFT) {
+                a.setVX(-5);
+            }
+            else if(key == KeyEvent.VK_RIGHT) {
+                a.setVX(5);
+            }
             
+            if(key == KeyEvent.VK_W) {
+                b.setVY(-5);
+            }
+            else if(key == KeyEvent.VK_S) {
+                b.setVY(5);
+            }
+            if(key == KeyEvent.VK_A) {
+                b.setVX(-5);
+            }
+            else if(key == KeyEvent.VK_D) {
+                b.setVX(5);
+            }
         }
         
         @Override

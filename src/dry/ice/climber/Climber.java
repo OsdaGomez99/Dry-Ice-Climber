@@ -43,7 +43,7 @@ public class Climber extends GameObject {
                     name = "running_left";
                     break;
                 case JUMPING_RIGHT:
-                    name = "jumping_left";
+                    name = "jumping_right";
                     break;
                 case JUMPING_LEFT:
                     name = "jumping_left";
@@ -55,4 +55,34 @@ public class Climber extends GameObject {
         }
     }
     
+    @Override
+    public void setVX(int new_vx) {
+        super.setVX(new_vx);
+        updateStateBasedOnVelocity();
+    }
+    
+    @Override
+    public void setVY(int new_vy) {
+        super.setVY(new_vy);
+        updateStateBasedOnVelocity();
+    }
+    
+    public void updateStateBasedOnVelocity() {
+        if(vx >= 0) {
+            if(vy < 0) {
+                setState(JUMPING_RIGHT);
+            }
+            else {
+                setState(RUNNING_RIGHT);
+            }
+        }
+        else {
+            if(vy < 0) {
+                setState(JUMPING_LEFT);
+            }
+            else {
+                setState(RUNNING_LEFT);
+            }
+        }
+    }
 }
