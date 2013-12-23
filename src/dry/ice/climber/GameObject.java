@@ -14,7 +14,7 @@ import java.awt.Rectangle;
  */
 public class GameObject extends Rectangle {
     protected static Image[][] imageStates;
-    protected int state, frame;
+    private int state, frame;
     
     protected int vx, vy;
     
@@ -24,9 +24,10 @@ public class GameObject extends Rectangle {
         x = x_coord;
         y = y_coord;
         vx = vy = 0;
+        frame = 0;
     }
     
-    public void setState(int s) {
+    public synchronized void setState(int s) {
         frame = 0;
         state = s;
     }

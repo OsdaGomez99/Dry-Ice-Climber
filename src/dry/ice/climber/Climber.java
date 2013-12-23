@@ -18,7 +18,7 @@ public class Climber extends GameObject {
     
     public Climber(int x, int y) {
         super(x,y);
-        state = JUMPING_RIGHT;
+        setState(STANDING);
         width = 20;
         height = 27;
         
