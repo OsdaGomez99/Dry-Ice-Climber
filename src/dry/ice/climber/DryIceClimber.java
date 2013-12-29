@@ -4,6 +4,8 @@
  */
 package dry.ice.climber;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import javax.swing.JFrame;
 import java.awt.event.KeyListener;
@@ -28,6 +30,9 @@ public class DryIceClimber {
     private Climber a, b;
     private ArrayList<Platform> platforms;
     
+    private Font displayFont;
+    
+    private int height;
     private boolean game;
     
     public DryIceClimber() {
@@ -45,6 +50,7 @@ public class DryIceClimber {
         surface = new GameSurface(this);
         gameFrame.add(surface);
         gameFrame.addKeyListener(new InputListener());
+        displayFont = new Font("Times New Roman", Font.BOLD, 36);
         
         a = new Climber(30, 50);
         b = new Climber(90, 50);
@@ -52,11 +58,13 @@ public class DryIceClimber {
         Platform p = new Platform(50,200);
         platforms.add(p);
         for(int i = 0; i < SCREEN_WIDTH/Platform.DIMENSION; i++) {
-            platforms.add(new Platform(i*Platform.DIMENSION, SCREEN_HEIGHT-Platform.DIMENSION));
+            if(Math.random()<0.5) {
+                platforms.add(new Platform(i*Platform.DIMENSION, SCREEN_HEIGHT-Platform.DIMENSION));
+            }
         }
         
         gameFrame.setVisible(true);
-        
+        height = 0;
         game = true;
         
         Timer t = new Timer();
@@ -68,6 +76,15 @@ public class DryIceClimber {
         b.paint(g);
         for(Platform platform : platforms) {
             platform.paint(g);
+        }
+        
+        if(!game) {
+            g.setColor(Color.WHITE);
+            g.setFont( displayFont );
+            g.drawString("GAME OVER", SCREEN_WIDTH/4, SCREEN_HEIGHT/3);
+            String winner = a.y > b.y ? "Player One wins." : "Player Two wins.";
+            if(a.y == b.y) winner = "Tie.";
+            g.drawString(winner, SCREEN_WIDTH/4, SCREEN_HEIGHT*2/3);
         }
     }
     
@@ -167,8 +184,8 @@ public class DryIceClimber {
     private class GameUpdater extends TimerTask {
         @Override
         public void run() {
-            if(a.y > SCREEN_HEIGHT + 10) {
-                game = false; //Gameover
+            if(a.y > SCREEN_HEIGHT + 10 || b.y > SCREEN_HEIGHT + 10) {
+                game = false; //Game over
             }
             
             for(Platform platform : platforms) {
@@ -182,7 +199,7 @@ public class DryIceClimber {
             
             a.updatePhysics();
             b.updatePhysics();
-            surface.repaint();            
+            surface.repaint();
         }
     }
 }
