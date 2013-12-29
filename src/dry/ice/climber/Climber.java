@@ -127,7 +127,7 @@ public class Climber extends GameObject {
 	if (x > p.x+3*p.width/4) return;
         
         boolean onPlatform = true;
-        y = p.y - height - 1;
+        y = p.y - height;
         if(vy > 0) {
             vy = 0;
         }
