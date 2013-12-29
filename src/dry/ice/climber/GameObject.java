@@ -13,7 +13,7 @@ import java.awt.Rectangle;
  * @author jlhota16
  */
 public class GameObject extends Rectangle {
-    protected static Image[][] imageStates;
+    protected Image[][] imageStates;
     private int state, frame;
     
     protected int vx, vy;

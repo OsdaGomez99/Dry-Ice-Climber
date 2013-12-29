@@ -45,7 +45,7 @@ public class DryIceClimber {
         
         a = new Climber(30, 50);
         b = new Climber(90, 50);
-        //p = new Platform(50,200);
+        p = new Platform(50,200);
         
         gameFrame.setVisible(true);
         
@@ -56,7 +56,7 @@ public class DryIceClimber {
     public void paintGameObjects(Graphics2D g) {
         a.paint(g);
         b.paint(g);
-        //p.paint(g);
+        p.paint(g);
     }
     
     /**
