@@ -33,7 +33,7 @@ public class DryIceClimber {
     private Font displayFont;
     
     private int height;
-    private boolean game;
+    private boolean instructions, game;
     
     public DryIceClimber() {
         
@@ -52,8 +52,8 @@ public class DryIceClimber {
         gameFrame.addKeyListener(new InputListener());
         displayFont = new Font("Comic Sans MS", Font.BOLD, 36);
         
-        a = new Climber(30, 50);
-        b = new Climber(90, 50);
+        a = new Climber("P1", 30, 50);
+        b = new Climber("P2", 90, 50);
         platforms = new ArrayList<Platform>();
         Platform p = new Platform(50,200);
         platforms.add(p);
@@ -66,13 +66,23 @@ public class DryIceClimber {
         gameFrame.setResizable(false);
         gameFrame.setVisible(true);
         height = 0;
-        game = true;
+        instructions = true;
+        game = false;
         
         Timer t = new Timer();
         t.scheduleAtFixedRate(new GameUpdater(), 100, 1000/30);
     }    
     
     public void paintGameObjects(Graphics2D g) {
+        if(instructions) {
+            g.setColor(Color.WHITE);
+            g.setFont( displayFont );
+            g.drawString("Player One Uses Arrow Keys.", 20, SCREEN_HEIGHT/4);
+            g.drawString("Player Two Uses WASD.", 20, SCREEN_HEIGHT/2);
+            g.drawString("Press any key to begin.", 20, 3*SCREEN_HEIGHT/4);
+            return;
+        }
+        
         a.paint(g);
         b.paint(g);
         for(Platform platform : platforms) {
@@ -100,6 +110,12 @@ public class DryIceClimber {
     private class InputListener implements KeyListener {
         @Override
         public void keyPressed(KeyEvent e) {
+            if(instructions) {
+                instructions = false;
+                game = true;
+                return;
+            }
+            
             int key = e.getKeyCode();
             if(key == KeyEvent.VK_UP) {
                 a.setVY(-15);
@@ -186,6 +202,8 @@ public class DryIceClimber {
     private class GameUpdater extends TimerTask {
         @Override
         public void run() {
+            if(instructions) return;
+            
             if(a.y > SCREEN_HEIGHT + 10 || b.y > SCREEN_HEIGHT + 10) {
                 game = false; //Game over
             }

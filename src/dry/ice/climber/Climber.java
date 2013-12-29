@@ -4,6 +4,9 @@
  */
 package dry.ice.climber;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 
@@ -17,8 +20,12 @@ public class Climber extends GameObject {
             RUNNING_LEFT = 2, JUMPING_RIGHT = 3, JUMPING_LEFT = 4;
     
     private boolean onPlatform;
+    private String title;
     
-    public Climber(int x, int y) {
+    private Font font;
+    private Color color;
+    
+    public Climber(String t, int x, int y) {
         super(x,y);
         
         setState(STANDING);
@@ -57,7 +64,19 @@ public class Climber extends GameObject {
             }
         }
         
+        font = new Font("Arial", Font.BOLD, 14);
+        color = new Color(153, 255, 255);
+        title = t;
         onPlatform = false;
+
+    }
+    
+    @Override
+    public void paint(Graphics2D g) {
+        super.paint(g);
+        g.setColor(color);
+        g.setFont(font);
+        g.drawString(title, x + width/3, y);
     }
     
     @Override
