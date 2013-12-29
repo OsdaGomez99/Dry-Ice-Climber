@@ -50,7 +50,7 @@ public class DryIceClimber {
         surface = new GameSurface(this);
         gameFrame.add(surface);
         gameFrame.addKeyListener(new InputListener());
-        displayFont = new Font("Times New Roman", Font.BOLD, 36);
+        displayFont = new Font("Comic Sans MS", Font.BOLD, 36);
         
         a = new Climber(30, 50);
         b = new Climber(90, 50);
@@ -81,10 +81,11 @@ public class DryIceClimber {
         if(!game) {
             g.setColor(Color.WHITE);
             g.setFont( displayFont );
-            g.drawString("GAME OVER", SCREEN_WIDTH/4, SCREEN_HEIGHT/3);
+            g.drawString("GAME OVER", SCREEN_WIDTH/4, SCREEN_HEIGHT/4);
             String winner = a.y > b.y ? "Player One wins." : "Player Two wins.";
             if(a.y == b.y) winner = "Tie.";
-            g.drawString(winner, SCREEN_WIDTH/4, SCREEN_HEIGHT*2/3);
+            g.drawString(winner, SCREEN_WIDTH/4, SCREEN_HEIGHT/2);
+            g.drawString("#comicsans5eva", SCREEN_WIDTH/4, 3*SCREEN_HEIGHT/4);
         }
     }
     
