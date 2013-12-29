@@ -22,8 +22,8 @@ public class Climber extends GameObject {
         super(x,y);
         
         setState(STANDING);
-        width = 20;
-        height = 27;
+        width = 40;
+        height = 54;
         
         imageStates = new Image[5][];
         imageStates[STANDING] = new Image[1];

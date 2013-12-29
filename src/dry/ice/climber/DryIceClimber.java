@@ -63,6 +63,7 @@ public class DryIceClimber {
             }
         }
         
+        gameFrame.setResizable(false);
         gameFrame.setVisible(true);
         height = 0;
         game = true;

@@ -46,7 +46,7 @@ public class GameObject extends Rectangle {
     }
     
     public void paint(Graphics2D g) {
-        g.drawImage(imageStates[state][frame], x, y, null);
+        g.drawImage(imageStates[state][frame], x, y, width, height, null);
         frame = (frame+1) % imageStates[state].length;
     }
 }
