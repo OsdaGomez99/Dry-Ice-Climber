@@ -16,8 +16,11 @@ public class Climber extends GameObject {
     public static final int STANDING = 0, RUNNING_RIGHT = 1,
             RUNNING_LEFT = 2, JUMPING_RIGHT = 3, JUMPING_LEFT = 4;
     
+    private boolean onPlatform;
+    
     public Climber(int x, int y) {
         super(x,y);
+        
         setState(STANDING);
         width = 20;
         height = 27;
@@ -53,6 +56,8 @@ public class Climber extends GameObject {
                 state[frame_id] = new ImageIcon(this.getClass().getResource(name+frame_id+".png")).getImage();
             }
         }
+        
+        onPlatform = false;
     }
     
     @Override
@@ -83,6 +88,32 @@ public class Climber extends GameObject {
             else {
                 setState(RUNNING_LEFT);
             }
+        }
+    }
+    
+    @Override
+    public void updatePhysics() {
+        super.updatePhysics();
+        
+        if(!onPlatform) {
+            vy++;
+        }
+    }
+    
+    public void checkCollisions(Platform p) {
+        if (y+height < p.y) return;
+	if (y > p.y+p.height) return;
+        
+	if (x+3*width/4 < p.x) return;
+	if (x > p.x+3*p.width/4) return;
+        
+        boolean onPlatform = true;
+        y = p.y - height - 1;
+        if(vy > 0) {
+            vy = 0;
+        }
+        if(vx == 0) {
+            setState(STANDING);
         }
     }
 }

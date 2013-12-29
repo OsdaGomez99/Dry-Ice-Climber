@@ -43,7 +43,6 @@ public class GameObject extends Rectangle {
     public void updatePhysics() {
         x += vx;
         y += vy;
-        vy++;
     }
     
     public void paint(Graphics2D g) {

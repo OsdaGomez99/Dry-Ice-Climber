@@ -15,12 +15,14 @@ public class Platform extends GameObject {
     
     public static final int NORMAL = 0, BROKEN = 1;
     
+    public static final int DIMENSION = 40;
+    
     public Platform(int x, int y) {
         super(x, y);
         
         setState(NORMAL);
-        width = 35;
-        height = 35;
+        width = DIMENSION;
+        height = DIMENSION; //I guess this is bad design but whatever
         
         imageStates = new Image[2][];
         imageStates[NORMAL] = new Image[1];

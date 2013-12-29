@@ -8,6 +8,7 @@ import java.awt.Graphics2D;
 import javax.swing.JFrame;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,7 +26,9 @@ public class DryIceClimber {
     private boolean up, down, left, right, w_key, a_key, s_key, d_key;
     
     private Climber a, b;
-    private Platform p;
+    private ArrayList<Platform> platforms;
+    
+    private boolean game;
     
     public DryIceClimber() {
         
@@ -45,9 +48,16 @@ public class DryIceClimber {
         
         a = new Climber(30, 50);
         b = new Climber(90, 50);
-        p = new Platform(50,200);
+        platforms = new ArrayList<Platform>();
+        Platform p = new Platform(50,200);
+        platforms.add(p);
+        for(int i = 0; i < SCREEN_WIDTH/Platform.DIMENSION; i++) {
+            platforms.add(new Platform(i*Platform.DIMENSION, SCREEN_HEIGHT-Platform.DIMENSION));
+        }
         
         gameFrame.setVisible(true);
+        
+        game = true;
         
         Timer t = new Timer();
         t.scheduleAtFixedRate(new GameUpdater(), 100, 1000/30);
@@ -56,7 +66,9 @@ public class DryIceClimber {
     public void paintGameObjects(Graphics2D g) {
         a.paint(g);
         b.paint(g);
-        p.paint(g);
+        for(Platform platform : platforms) {
+            platform.paint(g);
+        }
     }
     
     /**
@@ -71,10 +83,10 @@ public class DryIceClimber {
         public void keyPressed(KeyEvent e) {
             int key = e.getKeyCode();
             if(key == KeyEvent.VK_UP) {
-                a.setVY(-5);
+                a.setVY(-15);
             }
             else if(key == KeyEvent.VK_DOWN) {
-                a.setVY(5);
+                //a.setVY(5);
             }
             
             if(key == KeyEvent.VK_LEFT) {
@@ -90,11 +102,11 @@ public class DryIceClimber {
                 b.setVY(-5);
             }
             else if(key == KeyEvent.VK_S) {
-                b.setVY(5);
+                //b.setVY(5);
             }
             
             if(key == KeyEvent.VK_A) {
-                b.setVX(-5);
+                b.setVX(-15);
                 a_key = true;
             }
             else if(key == KeyEvent.VK_D) {
@@ -155,9 +167,22 @@ public class DryIceClimber {
     private class GameUpdater extends TimerTask {
         @Override
         public void run() {
+            if(a.y > SCREEN_HEIGHT + 10) {
+                game = false; //Gameover
+            }
+            
+            for(Platform platform : platforms) {
+                a.checkCollisions(platform);
+                b.checkCollisions(platform);
+                
+                if(platform.y > SCREEN_HEIGHT) {
+                    platforms.remove(platform);
+                }
+            }
+            
             a.updatePhysics();
             b.updatePhysics();
-            surface.repaint();
+            surface.repaint();            
         }
     }
 }
