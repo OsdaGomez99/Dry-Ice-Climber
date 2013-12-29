@@ -85,7 +85,7 @@ public class DryIceClimber {
             String winner = a.y > b.y ? "Player One wins." : "Player Two wins.";
             if(a.y == b.y) winner = "Tie.";
             g.drawString(winner, SCREEN_WIDTH/4, SCREEN_HEIGHT/2);
-            g.drawString("#comicsans5eva", SCREEN_WIDTH/4, 3*SCREEN_HEIGHT/4);
+            g.drawString("#comicsans", SCREEN_WIDTH/4, 3*SCREEN_HEIGHT/4);
         }
     }
     
