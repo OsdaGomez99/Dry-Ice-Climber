@@ -35,9 +35,11 @@ public class DryIceClimber {
     private int height;
     private boolean instructions, game;
     private boolean firstGame;
+    private boolean twoPlayer;
     
     public DryIceClimber() {
         firstGame = true;
+        twoPlayer = true;
     }
     
     public void go() {
@@ -57,7 +59,8 @@ public class DryIceClimber {
         }
         
         a = new Climber("P1", 30, 50);
-        b = new Climber("P2", 90, 50);
+        if(twoPlayer) b = new Climber("P2", 90, 50);
+        else b = null;
         platforms = new ArrayList<Platform>();
         platformsToRemove = new ArrayList<Platform>();
         Platform p = new Platform(this, 50,200);
@@ -85,12 +88,12 @@ public class DryIceClimber {
             g.setFont( displayFont );
             g.drawString("Player One Uses Arrow Keys.", 20, SCREEN_HEIGHT/4);
             g.drawString("Player Two Uses WASD.", 20, SCREEN_HEIGHT/2);
-            g.drawString("Press any key to begin.", 20, 3*SCREEN_HEIGHT/4);
+            g.drawString("Press 1 for one player, 2 for two.", 20, 3*SCREEN_HEIGHT/4);
             return;
         }
         
         a.paint(g);
-        b.paint(g);
+        if(twoPlayer) b.paint(g);
         for(Platform platform : platforms) {
             platform.paint(g);
         }
@@ -99,9 +102,15 @@ public class DryIceClimber {
             g.setColor(Color.WHITE);
             g.setFont( displayFont );
             g.drawString("GAME OVER", SCREEN_WIDTH/4, SCREEN_HEIGHT/4);
-            String winner = a.y < b.y ? "Player One wins." : "Player Two wins.";
-            if(a.y == b.y) winner = "Tie.";
-            g.drawString(winner, SCREEN_WIDTH/4, SCREEN_HEIGHT/2);
+            
+            if(twoPlayer) {
+                String winner = a.y < b.y ? "Player One wins." : "Player Two wins.";
+                if(a.y == b.y) winner = "Tie.";
+                g.drawString(winner, SCREEN_WIDTH/4, SCREEN_HEIGHT/2);
+            }
+            else {
+                g.drawString("Score: " + (height*10), SCREEN_WIDTH/4, SCREEN_HEIGHT/2);
+            }
             g.drawString("Press r to restart.", SCREEN_WIDTH/4, 3*SCREEN_HEIGHT/4);
         }
     }
@@ -120,13 +129,28 @@ public class DryIceClimber {
     private class InputListener implements KeyListener {
         @Override
         public void keyPressed(KeyEvent e) {
-            if(instructions) {
-                instructions = false;
-                game = true;
+            int key = e.getKeyCode();
+            
+            if(!game && !instructions && key == KeyEvent.VK_R) {
+                firstGame = false;
+                go();
                 return;
             }
             
-            int key = e.getKeyCode();
+            if(instructions) {
+                if(key == KeyEvent.VK_1) {
+                    twoPlayer = false;
+                    instructions = false;
+                    game = true;
+                }
+                else if(key == KeyEvent.VK_2) {
+                    twoPlayer = true;
+                    instructions = false;
+                    game = true;
+                }
+                return;
+            }
+            
             if(key == KeyEvent.VK_UP) {
                 a.setVY(-15);
             }
@@ -142,26 +166,22 @@ public class DryIceClimber {
                 a.setVX(5);
                 right = true;
             }
-            
-            if(key == KeyEvent.VK_W) {
-                b.setVY(-15);
-            }
-            else if(key == KeyEvent.VK_S) {
-                //b.setVY(5);
-            }
-            
-            if(key == KeyEvent.VK_A) {
-                b.setVX(-5);
-                a_key = true;
-            }
-            else if(key == KeyEvent.VK_D) {
-                b.setVX(5);
-                d_key = true;
-            }
-            
-            if(!game && !instructions && key == KeyEvent.VK_R) {
-                firstGame = false;
-                go();
+            if(twoPlayer) {
+                if(key == KeyEvent.VK_W) {
+                    b.setVY(-15);
+                }
+                else if(key == KeyEvent.VK_S) {
+                    //b.setVY(5);
+                }
+
+                if(key == KeyEvent.VK_A) {
+                    b.setVX(-5);
+                    a_key = true;
+                }
+                else if(key == KeyEvent.VK_D) {
+                    b.setVX(5);
+                    d_key = true;
+                }
             }
         }
         
@@ -188,22 +208,24 @@ public class DryIceClimber {
                 }
             }
             
-            if(key == KeyEvent.VK_A) {
-                a_key = false;
-                if(!d_key) {
-                    b.setVX(0);
+            if(twoPlayer) {
+                if(key == KeyEvent.VK_A) {
+                    a_key = false;
+                    if(!d_key) {
+                        b.setVX(0);
+                    }
+                    else {
+                        b.setVX(5);
+                    }
                 }
-                else {
-                    b.setVX(5);
-                }
-            }
-            else if(key == KeyEvent.VK_D) {
-                d_key = false;
-                if(!a_key) {
-                    b.setVX(0);
-                }
-                else {
-                    b.setVX(-5);
+                else if(key == KeyEvent.VK_D) {
+                    d_key = false;
+                    if(!a_key) {
+                        b.setVX(0);
+                    }
+                    else {
+                        b.setVX(-5);
+                    }
                 }
             }
         }
@@ -217,25 +239,32 @@ public class DryIceClimber {
     private class GameUpdater extends TimerTask {
         @Override
         public void run() {
+            surface.repaint();
             if(!game) return;
             
-            if(a.y > SCREEN_HEIGHT + 10 || b.y > SCREEN_HEIGHT + 10) {
+            if(twoPlayer) {
+                if(a.y > SCREEN_HEIGHT + 10 || b.y > SCREEN_HEIGHT + 10) {
+                    game = false; //Game over
+                }
+            }
+            else if(!twoPlayer && a.y > SCREEN_HEIGHT + 10) {
                 game = false; //Game over
             }
             
             a.y += SCROLL_VEL;
-            b.y += SCROLL_VEL;
+            if(twoPlayer) b.y += SCROLL_VEL;
+            
+            height += SCROLL_VEL;
             
             a.updatePhysics();
-            b.updatePhysics();
+            if(twoPlayer) b.updatePhysics();
             
             for(Platform platform : platforms) {
                 platform.y += SCROLL_VEL;
                 
                 a.checkCollisions(platform);
-                b.checkCollisions(platform);
+                if(twoPlayer) b.checkCollisions(platform);
             }
-            surface.repaint();
             
             for(Platform platform : platforms) {
                 if(platform.y > SCREEN_HEIGHT) {
