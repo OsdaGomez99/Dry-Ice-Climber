@@ -20,7 +20,7 @@ import java.util.TimerTask;
  */
 public class DryIceClimber {
     
-    public static final int SCREEN_WIDTH = 640, SCREEN_HEIGHT = 480;
+    public static final int SCREEN_WIDTH = 640, SCREEN_HEIGHT = 480, GRAV_ACC = 2, SCROLL_VEL = 1;
     
     private JFrame gameFrame;
     private GameSurface surface;
@@ -28,7 +28,7 @@ public class DryIceClimber {
     private boolean up, down, left, right, w_key, a_key, s_key, d_key;
     
     private Climber a, b;
-    private ArrayList<Platform> platforms;
+    private ArrayList<Platform> platforms, platformsToRemove;
     
     private Font displayFont;
     
@@ -59,11 +59,12 @@ public class DryIceClimber {
         a = new Climber("P1", 30, 50);
         b = new Climber("P2", 90, 50);
         platforms = new ArrayList<Platform>();
-        Platform p = new Platform(50,200);
+        platformsToRemove = new ArrayList<Platform>();
+        Platform p = new Platform(this, 50,200);
         platforms.add(p);
         for(int i = 0; i < SCREEN_WIDTH/Platform.DIMENSION; i++) {
             if(Math.random()<0.5) {
-                platforms.add(new Platform(i*Platform.DIMENSION, SCREEN_HEIGHT-Platform.DIMENSION));
+                platforms.add(new Platform(this, i*Platform.DIMENSION, SCREEN_HEIGHT-Platform.DIMENSION));
             }
         }
         
@@ -110,6 +111,10 @@ public class DryIceClimber {
      */
     public static void main(String[] args) {
         new DryIceClimber().go();
+    }
+    
+    public void removePlatform(Platform platform) {
+        platformsToRemove.add(platform);
     }
     
     private class InputListener implements KeyListener {
@@ -212,24 +217,34 @@ public class DryIceClimber {
     private class GameUpdater extends TimerTask {
         @Override
         public void run() {
-            if(instructions) return;
+            if(!game) return;
             
             if(a.y > SCREEN_HEIGHT + 10 || b.y > SCREEN_HEIGHT + 10) {
                 game = false; //Game over
             }
             
+            a.y += SCROLL_VEL;
+            b.y += SCROLL_VEL;
+            
             for(Platform platform : platforms) {
+                platform.y += SCROLL_VEL;
+                
                 a.checkCollisions(platform);
                 b.checkCollisions(platform);
-                
-                if(platform.y > SCREEN_HEIGHT) {
-                    platforms.remove(platform);
-                }
             }
             
             a.updatePhysics();
             b.updatePhysics();
             surface.repaint();
+            
+            for(Platform platform : platforms) {
+                if(platform.y > SCREEN_HEIGHT) {
+                    platformsToRemove.add(platform);
+                }
+            }
+            
+            platforms.removeAll(platformsToRemove);
+            platformsToRemove.clear();
         }
     }
 }

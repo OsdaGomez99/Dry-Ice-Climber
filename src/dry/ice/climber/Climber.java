@@ -92,7 +92,7 @@ public class Climber extends GameObject {
     }
     
     public void updateStateBasedOnVelocity() {
-        if(vx >= 0) {
+        if(vx > 0) {
             if(vy < 0) {
                 setState(JUMPING_RIGHT);
             }
@@ -100,13 +100,16 @@ public class Climber extends GameObject {
                 setState(RUNNING_RIGHT);
             }
         }
-        else {
+        else if(vx < 0) {
             if(vy < 0) {
                 setState(JUMPING_LEFT);
             }
             else {
                 setState(RUNNING_LEFT);
             }
+        }
+        else {
+            setState(STANDING);
         }
     }
     
@@ -115,7 +118,7 @@ public class Climber extends GameObject {
         super.updatePhysics();
         
         if(!onPlatform) {
-            vy++;
+            vy += DryIceClimber.GRAV_ACC;
         }
     }
     
@@ -126,13 +129,19 @@ public class Climber extends GameObject {
 	if (x+3*width/4 < p.x) return;
 	if (x > p.x+3*p.width/4) return;
         
-        boolean onPlatform = true;
-        y = p.y - height;
-        if(vy > 0) {
-            vy = 0;
+        if(y < p.y + p.height/2) {
+            boolean onPlatform = true;
+            y = p.y - height;
+            if(vy > 0) {
+                vy = 0;
+            }
+            if(vx == 0) {
+                setState(STANDING);
+            }
         }
-        if(vx == 0) {
-            setState(STANDING);
+        else {
+            y = p.y + p.height + 1;
+            p.damage();
         }
     }
 }

@@ -32,6 +32,10 @@ public class GameObject extends Rectangle {
         state = s;
     }
     
+    public int getState() {
+        return state;
+    }
+    
     public void setVX(int new_vx) {
         vx = new_vx;
     }

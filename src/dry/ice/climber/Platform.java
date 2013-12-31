@@ -17,7 +17,9 @@ public class Platform extends GameObject {
     
     public static final int DIMENSION = 40;
     
-    public Platform(int x, int y) {
+    private DryIceClimber dryIceGame;
+    
+    public Platform(DryIceClimber game, int x, int y) {
         super(x, y);
         
         setState(NORMAL);
@@ -30,6 +32,17 @@ public class Platform extends GameObject {
         
         imageStates[NORMAL][0] = new ImageIcon(this.getClass().getResource("platform_normal.png")).getImage();
         imageStates[BROKEN][0] = new ImageIcon(this.getClass().getResource("platform_broken.png")).getImage();
+        
+        dryIceGame = game;
+    }
+    
+    public void damage() {
+        if(getState() == NORMAL) {
+            setState(BROKEN);
+        }
+        else if(getState() == BROKEN) {
+            dryIceGame.removePlatform(this);
+        }
     }
     
 }
