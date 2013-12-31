@@ -20,7 +20,7 @@ public class Platform extends GameObject {
     private DryIceClimber dryIceGame;
     
     public Platform(DryIceClimber game, int x, int y) {
-        super(x, y);
+        super(game, x, y);
         
         setState(NORMAL);
         width = DIMENSION;
@@ -43,10 +43,6 @@ public class Platform extends GameObject {
         else if(getState() == BROKEN) {
             remove();
         }
-    }
-    
-    public void remove() {
-        dryIceGame.removePlatform(this);
     }
     
 }

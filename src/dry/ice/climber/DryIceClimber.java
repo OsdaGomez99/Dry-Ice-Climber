@@ -30,8 +30,7 @@ public class DryIceClimber {
     private boolean up, down, left, right, w_key, a_key, s_key, d_key;
     
     private Climber a, b;
-    private ArrayList<Platform> platforms, platformsToRemove;
-    private PowerUp power;
+    private ArrayList<GameObject> objects, objectsToRemove;
     
     private Font displayFont;
     
@@ -61,21 +60,20 @@ public class DryIceClimber {
             displayFont = new Font("Comic Sans MS", Font.BOLD, 36);
         }
         
-        a = new Climber("P1", 30, 50);
-        if(twoPlayer) b = new Climber("P2", 90, 50);
+        a = new Climber(this, "P1", 30, 50);
+        if(twoPlayer) b = new Climber(this, "P2", 90, 50);
         else b = null;
-        platforms = new ArrayList<Platform>();
-        platformsToRemove = new ArrayList<Platform>();
-        Platform p = new Platform(this, 50,200);
-        platforms.add(p);
+        objects = new ArrayList<GameObject>();
+        objectsToRemove = new ArrayList<GameObject>();
         
-        power = new PowerUp(SCREEN_HEIGHT/2, SCREEN_WIDTH/2, PowerUp.FLY);
+        PowerUp power = new PowerUp(this, SCREEN_WIDTH/2, SCREEN_HEIGHT/4, PowerUp.FLY);
+        objects.add(power);
         
         int maxJ = SCREEN_WIDTH/Platform.DIMENSION;
         for(int i = 0; i < SCREEN_HEIGHT/PLAT_HEIGHT_DIST; i++) {
             for(int j = 0; j < maxJ; j++) {
                 if(i != j) {
-                    platforms.add(new Platform(this, j*Platform.DIMENSION, (i)*PLAT_HEIGHT_DIST));
+                    objects.add(new Platform(this, j*Platform.DIMENSION, (i)*PLAT_HEIGHT_DIST));
                 }
             }
         }
@@ -108,11 +106,10 @@ public class DryIceClimber {
             b.paint(g);
         }
         
-        synchronized(platforms) {
-            for(Platform platform : platforms) {
-                platform.paint(g);
+        synchronized(objects) {
+            for(GameObject object : objects) {
+                object.paint(g);
             }
-            power.paint(g);
         }
         
         if(!game) {
@@ -139,8 +136,8 @@ public class DryIceClimber {
         new DryIceClimber().go();
     }
     
-    public void removePlatform(Platform platform) {
-        platformsToRemove.add(platform);
+    public void removeObject(GameObject obj) {
+        objectsToRemove.add(obj);
     }
     
     private class InputListener implements KeyListener {
@@ -314,45 +311,46 @@ public class DryIceClimber {
                 game = false; //Game over
             }
             
-            a.y += SCROLL_VEL;
-            if(twoPlayer) b.y += SCROLL_VEL;
+            if(!a.hasPower(PowerUp.FLY)) {
+                a.y += SCROLL_VEL;
+            }
+            if(twoPlayer) {
+                if(!b.hasPower(PowerUp.FLY)) {
+                    b.y += SCROLL_VEL;
+                }
+            }
             
             height += SCROLL_VEL;
             
             a.updatePhysics();
             if(twoPlayer) b.updatePhysics();
             
-            for(Platform platform : platforms) {
-                platform.y += SCROLL_VEL;
+            for(GameObject object : objects) {
+                object.y += SCROLL_VEL;
                 
-                a.checkCollisions(platform);
-                if(twoPlayer) b.checkCollisions(platform);
+                a.checkCollisions(object);
+                if(twoPlayer) b.checkCollisions(object);
             }
             
-            for(Platform platform : platforms) {
-                if(platform.y > SCREEN_HEIGHT) {
-                    platformsToRemove.add(platform);
+            for(GameObject object : objects) {
+                if(object.y > SCREEN_HEIGHT) {
+                    object.remove();
                 }
             }
             
             if(height % PLAT_HEIGHT_DIST == 0) {
-                synchronized(platforms) {
+                synchronized(objects) {
                     float prob = (height/PLAT_HEIGHT_DIST)%2==1 ? 0.75f : 0.3f;
                     for(int j = 0; j < SCREEN_WIDTH/Platform.DIMENSION; j++) {
                         if(Math.random()<prob) {
-                            platforms.add(new Platform(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION));
+                            objects.add(new Platform(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION));
                         }
                     }
-            }
-            }
-            
-            a.checkCollisions(power);
-            if(twoPlayer) {
-                b.checkCollisions(power);
+                }
             }
             
-            platforms.removeAll(platformsToRemove);
-            platformsToRemove.clear();
+            objects.removeAll(objectsToRemove);
+            objectsToRemove.clear();
         }
     }
 }

@@ -20,13 +20,13 @@ public class PowerUp extends GameObject {
     private int type;
     
     private int clock;
-    private static final int fullTime = 30*5; // five seconds (30fps)
+    public static final int fullTime = 30*5; // five seconds (30fps)
     private boolean activated;
     
     public static final int DIMENSION = 50;
     
-    public PowerUp(int x, int y, int type) {
-        super(x,y);
+    public PowerUp(DryIceClimber game, int x, int y, int type) {
+        super(game, x, y);
         this.type = type;
         width = height = DIMENSION;
         imageStates = new Image[1][1];
@@ -35,6 +35,10 @@ public class PowerUp extends GameObject {
     
     public void activate() {
         activated = true;
+    }
+    
+    public int getClock() {
+        return clock;
     }
     
     public void updatePhysics() {

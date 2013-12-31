@@ -29,8 +29,8 @@ public class Climber extends GameObject {
     private Font font;
     private Color color;
         
-    public Climber(String t, int x, int y) {
-        super(x,y);
+    public Climber(DryIceClimber game, String t, int x, int y) {
+        super(game, x,y);
         
         powers = new HashMap<Integer, PowerUp>();
         
@@ -83,6 +83,8 @@ public class Climber extends GameObject {
         g.setColor(color);
         g.setFont(font);
         g.drawString(title, x + width/3, y);
+        
+        //TODO draw some clock thing for the powerups
     }
     
     @Override
@@ -171,6 +173,7 @@ public class Climber extends GameObject {
             PowerUp pow = (PowerUp) p;
             powers.put(pow.getType(), pow);
             pow.activate();
+            pow.remove();
         }
     }
     
