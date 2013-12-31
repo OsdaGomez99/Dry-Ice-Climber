@@ -93,7 +93,7 @@ public class DryIceClimber {
             g.setColor(Color.WHITE);
             g.setFont( displayFont );
             g.drawString("GAME OVER", SCREEN_WIDTH/4, SCREEN_HEIGHT/4);
-            String winner = a.y > b.y ? "Player One wins." : "Player Two wins.";
+            String winner = a.y < b.y ? "Player One wins." : "Player Two wins.";
             if(a.y == b.y) winner = "Tie.";
             g.drawString(winner, SCREEN_WIDTH/4, SCREEN_HEIGHT/2);
             g.drawString("#comicsans", SCREEN_WIDTH/4, 3*SCREEN_HEIGHT/4);
@@ -134,14 +134,14 @@ public class DryIceClimber {
             }
             
             if(key == KeyEvent.VK_W) {
-                b.setVY(-5);
+                b.setVY(-15);
             }
             else if(key == KeyEvent.VK_S) {
                 //b.setVY(5);
             }
             
             if(key == KeyEvent.VK_A) {
-                b.setVX(-15);
+                b.setVX(-5);
                 a_key = true;
             }
             else if(key == KeyEvent.VK_D) {
