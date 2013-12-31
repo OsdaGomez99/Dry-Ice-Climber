@@ -87,7 +87,9 @@ public class Climber extends GameObject {
     
     @Override
     public void setVY(int new_vy) {
-        super.setVY(new_vy);
+        if(onPlatform) {
+            super.setVY(new_vy);
+        }//You can't jump if you're not on a platform.
         updateStateBasedOnVelocity();
     }
     
@@ -120,9 +122,10 @@ public class Climber extends GameObject {
         if(!onPlatform) {
             vy += DryIceClimber.GRAV_ACC;
         }
+        onPlatform = false;
     }
     
-    public void checkCollisions(Platform p) {
+    public void checkCollisions(Platform p) {        
         if (y+height < p.y) return;
 	if (y > p.y+p.height) return;
         
@@ -130,7 +133,7 @@ public class Climber extends GameObject {
 	if (x > p.x+3*p.width/4) return;
         
         if(y < p.y + p.height/2) {
-            boolean onPlatform = true;
+            onPlatform = true;
             y = p.y - height;
             if(vy > 0) {
                 vy = 0;

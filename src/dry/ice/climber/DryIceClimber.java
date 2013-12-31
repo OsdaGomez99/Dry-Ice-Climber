@@ -226,15 +226,15 @@ public class DryIceClimber {
             a.y += SCROLL_VEL;
             b.y += SCROLL_VEL;
             
+            a.updatePhysics();
+            b.updatePhysics();
+            
             for(Platform platform : platforms) {
                 platform.y += SCROLL_VEL;
                 
                 a.checkCollisions(platform);
                 b.checkCollisions(platform);
             }
-            
-            a.updatePhysics();
-            b.updatePhysics();
             surface.repaint();
             
             for(Platform platform : platforms) {
