@@ -46,7 +46,8 @@ public class GameObject extends Rectangle {
     
     public void updatePhysics() {
         x = (x + vx) % DryIceClimber.SCREEN_WIDTH;
-        y = (y + vy) % DryIceClimber.SCREEN_HEIGHT;
+        if(x < 0) x = DryIceClimber.SCREEN_WIDTH + x;
+        y += vy;
     }
     
     public void paint(Graphics2D g) {

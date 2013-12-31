@@ -285,7 +285,7 @@ public class DryIceClimber {
             
             if(height % PLAT_HEIGHT_DIST == 0) {
                 synchronized(platforms) {
-                    float prob = (height/PLAT_HEIGHT_DIST)%2==0 ? 0.75f : 0.3f;
+                    float prob = (height/PLAT_HEIGHT_DIST)%2==1 ? 0.75f : 0.3f;
                     for(int j = 0; j < SCREEN_WIDTH/Platform.DIMENSION; j++) {
                         if(Math.random()<prob) {
                             platforms.add(new Platform(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION));

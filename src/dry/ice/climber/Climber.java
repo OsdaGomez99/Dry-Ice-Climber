@@ -150,7 +150,7 @@ public class Climber extends GameObject {
             if(vy < -15) {
                 //if(p != prevCollision) {
                     p.damage();
-                    vy = -vy;
+                    vy = -vy/2;
                 //}
                 //prevCollision = p;
             }
