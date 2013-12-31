@@ -19,6 +19,8 @@ public class Climber extends GameObject {
     public static final int STANDING = 0, RUNNING_RIGHT = 1,
             RUNNING_LEFT = 2, JUMPING_RIGHT = 3, JUMPING_LEFT = 4;
     
+    public static final int JUMP_VEL = 20, RUN_VEL = 8;
+    
     private boolean onPlatform;
     private String title;
     
@@ -81,14 +83,14 @@ public class Climber extends GameObject {
     
     @Override
     public void setVX(int new_vx) {
-        super.setVX(new_vx);
+        super.setVX(new_vx * RUN_VEL);
         updateStateBasedOnVelocity();
     }
     
     @Override
     public void setVY(int new_vy) {
         if(onPlatform) {
-            super.setVY(new_vy);
+            super.setVY(new_vy * JUMP_VEL);
         }//You can't jump if you're not on a platform.
         updateStateBasedOnVelocity();
     }

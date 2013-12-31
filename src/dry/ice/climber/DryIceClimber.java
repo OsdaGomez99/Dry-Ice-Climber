@@ -20,7 +20,9 @@ import java.util.TimerTask;
  */
 public class DryIceClimber {
     
-    public static final int SCREEN_WIDTH = 640, SCREEN_HEIGHT = 480, GRAV_ACC = 2, SCROLL_VEL = 1;
+    public static final int SCREEN_WIDTH = 640, SCREEN_HEIGHT = 480,
+            GRAV_ACC = 2, SCROLL_VEL = 1, PLAT_HEIGHT_DIST = (int) ((((int)Math.pow(Climber.JUMP_VEL, 2))/(GRAV_ACC*2)) * 0.9f);
+    //15 is the jump velocity, 0.75 is a scaling factor to make jumping easier
     
     private JFrame gameFrame;
     private GameSurface surface;
@@ -65,9 +67,12 @@ public class DryIceClimber {
         platformsToRemove = new ArrayList<Platform>();
         Platform p = new Platform(this, 50,200);
         platforms.add(p);
-        for(int i = 0; i < SCREEN_WIDTH/Platform.DIMENSION; i++) {
-            if(Math.random()<0.5) {
-                platforms.add(new Platform(this, i*Platform.DIMENSION, SCREEN_HEIGHT-Platform.DIMENSION));
+        
+        for(int i = 0; i < SCREEN_HEIGHT/PLAT_HEIGHT_DIST; i++) {
+            for(int j = 0; j < SCREEN_WIDTH/Platform.DIMENSION; j++) {
+                if(Math.random()<0.333f) {
+                    platforms.add(new Platform(this, j*Platform.DIMENSION, i*PLAT_HEIGHT_DIST));
+                }
             }
         }
         
@@ -80,7 +85,7 @@ public class DryIceClimber {
             Timer t = new Timer();
             t.scheduleAtFixedRate(new GameUpdater(), 100, 1000/30);
         }
-    }    
+    }
     
     public void paintGameObjects(Graphics2D g) {
         if(instructions) {
@@ -93,7 +98,10 @@ public class DryIceClimber {
         }
         
         a.paint(g);
-        if(twoPlayer) b.paint(g);
+        if(twoPlayer) {
+            b.paint(g);
+        }
+        
         for(Platform platform : platforms) {
             platform.paint(g);
         }
@@ -152,34 +160,34 @@ public class DryIceClimber {
             }
             
             if(key == KeyEvent.VK_UP) {
-                a.setVY(-15);
+                a.setVY(-1);
             }
             else if(key == KeyEvent.VK_DOWN) {
                 //a.setVY(5);
             }
             
             if(key == KeyEvent.VK_LEFT) {
-                a.setVX(-5);
+                a.setVX(-1);
                 left = true;
             }
             else if(key == KeyEvent.VK_RIGHT) {
-                a.setVX(5);
+                a.setVX(1);
                 right = true;
             }
             if(twoPlayer) {
                 if(key == KeyEvent.VK_W) {
-                    b.setVY(-15);
+                    b.setVY(-1);
                 }
                 else if(key == KeyEvent.VK_S) {
                     //b.setVY(5);
                 }
 
                 if(key == KeyEvent.VK_A) {
-                    b.setVX(-5);
+                    b.setVX(-1);
                     a_key = true;
                 }
                 else if(key == KeyEvent.VK_D) {
-                    b.setVX(5);
+                    b.setVX(1);
                     d_key = true;
                 }
             }
@@ -195,7 +203,7 @@ public class DryIceClimber {
                     a.setVX(0);
                 }
                 else {
-                    a.setVX(5);
+                    a.setVX(1);
                 }
             }
             else if(key == KeyEvent.VK_RIGHT) {
@@ -204,7 +212,7 @@ public class DryIceClimber {
                     a.setVX(0);
                 }
                 else {
-                    a.setVX(-5);
+                    a.setVX(-1);
                 }
             }
             
@@ -215,7 +223,7 @@ public class DryIceClimber {
                         b.setVX(0);
                     }
                     else {
-                        b.setVX(5);
+                        b.setVX(1);
                     }
                 }
                 else if(key == KeyEvent.VK_D) {
@@ -224,7 +232,7 @@ public class DryIceClimber {
                         b.setVX(0);
                     }
                     else {
-                        b.setVX(-5);
+                        b.setVX(-1);
                     }
                 }
             }
@@ -271,6 +279,14 @@ public class DryIceClimber {
                     platformsToRemove.add(platform);
                 }
             }
+            
+            /*if(height % PLAT_HEIGHT_DIST == 0) {
+                for(int j = 0; j < SCREEN_WIDTH/Platform.DIMENSION; j++) {
+                    if(Math.random()<0.25) {
+                        platforms.add(new Platform(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION));
+                    }
+                }
+            }*/
             
             platforms.removeAll(platformsToRemove);
             platformsToRemove.clear();
