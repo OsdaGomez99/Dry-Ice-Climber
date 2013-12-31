@@ -6,6 +6,8 @@ package dry.ice.climber;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import javax.swing.ImageIcon;
 
 /**
  *
@@ -21,18 +23,14 @@ public class PowerUp extends GameObject {
     private static final int fullTime = 30*5; // five seconds (30fps)
     private boolean activated;
     
-    public static final int DIMENSION = 20;
+    public static final int DIMENSION = 50;
     
     public PowerUp(int x, int y, int type) {
         super(x,y);
         this.type = type;
         width = height = DIMENSION;
-    }
-    
-    @Override
-    public void paint(Graphics2D g) {
-        g.setColor(Color.PINK);
-        g.fillRect(x, y, width, height);
+        imageStates = new Image[1][1];
+        imageStates[FLY][0] = new ImageIcon(this.getClass().getResource("jetpack.png")).getImage();
     }
     
     public void activate() {
