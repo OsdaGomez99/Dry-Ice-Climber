@@ -21,7 +21,7 @@ import java.util.TimerTask;
 public class DryIceClimber {
     
     public static final int SCREEN_WIDTH = 640, SCREEN_HEIGHT = 480,
-            GRAV_ACC = 2, SCROLL_VEL = 1, PLAT_HEIGHT_DIST = (int) ((((int)Math.pow(Climber.JUMP_VEL, 2))/(GRAV_ACC*2)) * 0.9f);
+            GRAV_ACC = 2, SCROLL_VEL = 1, PLAT_HEIGHT_DIST = (int) ((((int)Math.pow(Climber.JUMP_VEL, 2))/(GRAV_ACC*2)) * 1.0f);
     //15 is the jump velocity, 0.75 is a scaling factor to make jumping easier
     
     private JFrame gameFrame;
@@ -68,10 +68,11 @@ public class DryIceClimber {
         Platform p = new Platform(this, 50,200);
         platforms.add(p);
         
+        int maxJ = SCREEN_WIDTH/Platform.DIMENSION;
         for(int i = 0; i < SCREEN_HEIGHT/PLAT_HEIGHT_DIST; i++) {
-            for(int j = 0; j < SCREEN_WIDTH/Platform.DIMENSION; j++) {
-                if(Math.random()<0.333f) {
-                    platforms.add(new Platform(this, j*Platform.DIMENSION, i*PLAT_HEIGHT_DIST));
+            for(int j = 0; j < maxJ; j++) {
+                if(i != j) {
+                    platforms.add(new Platform(this, j*Platform.DIMENSION, (i)*PLAT_HEIGHT_DIST));
                 }
             }
         }
@@ -102,8 +103,10 @@ public class DryIceClimber {
             b.paint(g);
         }
         
-        for(Platform platform : platforms) {
-            platform.paint(g);
+        synchronized(platforms) {
+            for(Platform platform : platforms) {
+                platform.paint(g);
+            }
         }
         
         if(!game) {
@@ -280,13 +283,16 @@ public class DryIceClimber {
                 }
             }
             
-            /*if(height % PLAT_HEIGHT_DIST == 0) {
-                for(int j = 0; j < SCREEN_WIDTH/Platform.DIMENSION; j++) {
-                    if(Math.random()<0.25) {
-                        platforms.add(new Platform(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION));
+            if(height % PLAT_HEIGHT_DIST == 0) {
+                synchronized(platforms) {
+                    float prob = (height/PLAT_HEIGHT_DIST)%2==0 ? 0.75f : 0.3f;
+                    for(int j = 0; j < SCREEN_WIDTH/Platform.DIMENSION; j++) {
+                        if(Math.random()<prob) {
+                            platforms.add(new Platform(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION));
+                        }
                     }
-                }
-            }*/
+            }
+            }
             
             platforms.removeAll(platformsToRemove);
             platformsToRemove.clear();

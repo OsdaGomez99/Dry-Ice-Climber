@@ -27,6 +27,8 @@ public class Climber extends GameObject {
     private Font font;
     private Color color;
     
+    //private Platform prevCollision;
+    
     public Climber(String t, int x, int y) {
         super(x,y);
         
@@ -38,8 +40,8 @@ public class Climber extends GameObject {
         imageStates[STANDING] = new Image[1];
         imageStates[RUNNING_RIGHT] = new Image[1];
         imageStates[RUNNING_LEFT] = new Image[1];
-        imageStates[JUMPING_RIGHT] = new Image[2];
-        imageStates[JUMPING_LEFT] = new Image[2];
+        imageStates[JUMPING_RIGHT] = new Image[1];
+        imageStates[JUMPING_LEFT] = new Image[1];
         
         for(int state_id = 0; state_id < imageStates.length; state_id++) {
             Image[] state = imageStates[state_id];
@@ -130,11 +132,10 @@ public class Climber extends GameObject {
     public void checkCollisions(Platform p) {        
         if (y+height < p.y) return;
 	if (y > p.y+p.height) return;
+	if (x+width/2 < p.x) return;
+	if (x > p.x+p.width/2) return;
         
-	if (x+3*width/4 < p.x) return;
-	if (x > p.x+3*p.width/4) return;
-        
-        if(y < p.y + p.height/2) {
+        if(y < p.y) {
             onPlatform = true;
             y = p.y - height;
             if(vy > 0) {
@@ -146,7 +147,16 @@ public class Climber extends GameObject {
         }
         else {
             y = p.y + p.height + 1;
-            p.damage();
+            if(vy < -15) {
+                //if(p != prevCollision) {
+                    p.damage();
+                    vy = -vy;
+                //}
+                //prevCollision = p;
+            }
+            else {
+                //prevCollision = null;
+            }
         }
     }
 }
