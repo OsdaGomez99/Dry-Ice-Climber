@@ -8,6 +8,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.util.HashMap;
 import javax.swing.ImageIcon;
 
 /**
@@ -21,16 +22,17 @@ public class Climber extends GameObject {
     
     public static final int JUMP_VEL = 20, RUN_VEL = 8;
     
+    private HashMap<Integer, PowerUp> powers;
     private boolean onPlatform;
     private String title;
     
     private Font font;
     private Color color;
-    
-    //private Platform prevCollision;
-    
+        
     public Climber(String t, int x, int y) {
         super(x,y);
+        
+        powers = new HashMap<Integer, PowerUp>();
         
         setState(STANDING);
         width = 40;
@@ -91,7 +93,7 @@ public class Climber extends GameObject {
     
     @Override
     public void setVY(int new_vy) {
-        if(onPlatform) {
+        if(onPlatform || hasPower(PowerUp.FLY)) {
             super.setVY(new_vy * JUMP_VEL);
         }//You can't jump if you're not on a platform.
         updateStateBasedOnVelocity();
@@ -124,39 +126,58 @@ public class Climber extends GameObject {
         super.updatePhysics();
         
         if(!onPlatform) {
-            vy += DryIceClimber.GRAV_ACC;
+            if(!hasPower(PowerUp.FLY)) {
+                vy += DryIceClimber.GRAV_ACC;
+            }
         }
         onPlatform = false;
+        
+        for(PowerUp power : powers.values()) {
+            power.updatePhysics();
+        }
     }
     
-    public void checkCollisions(Platform p) {        
+    public void checkCollisions(GameObject p) {        
         if (y+height < p.y) return;
 	if (y > p.y+p.height) return;
 	if (x+width/2 < p.x) return;
 	if (x > p.x+p.width/2) return;
         
-        if(y < p.y) {
-            onPlatform = true;
-            y = p.y - height;
-            if(vy > 0) {
-                vy = 0;
-            }
-            if(vx == 0) {
-                setState(STANDING);
-            }
-        }
-        else {
-            y = p.y + p.height + 1;
-            if(vy < -15) {
-                //if(p != prevCollision) {
-                    p.damage();
-                    vy = -vy/2;
-                //}
-                //prevCollision = p;
+        if(p instanceof Platform) {
+            if(hasPower(PowerUp.FLY)) {
+                ((Platform)p).remove();
             }
             else {
-                //prevCollision = null;
+                if(y < p.y) {
+                    onPlatform = true;
+                    y = p.y - height;
+                    if(vy > 0) {
+                        vy = 0;
+                    }
+                    if(vx == 0) {
+                        setState(STANDING);
+                    }
+                }
+                else {
+                    y = p.y + p.height + 1;
+                    if(vy < -15) {
+                        ((Platform)p).damage();
+                        vy = -vy/2;
+                    }
+                }
             }
         }
+        else if(p instanceof PowerUp) {
+            PowerUp pow = (PowerUp) p;
+            powers.put(pow.getType(), pow);
+            pow.activate();
+        }
+    }
+    
+    public boolean hasPower(Integer powerUp) {
+        if(powers.get(powerUp) != null) {
+            return powers.get(powerUp).isActivated();
+        }
+        else return false;
     }
 }

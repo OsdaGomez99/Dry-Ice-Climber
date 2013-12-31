@@ -31,6 +31,7 @@ public class DryIceClimber {
     
     private Climber a, b;
     private ArrayList<Platform> platforms, platformsToRemove;
+    private PowerUp power;
     
     private Font displayFont;
     
@@ -68,6 +69,8 @@ public class DryIceClimber {
         Platform p = new Platform(this, 50,200);
         platforms.add(p);
         
+        power = new PowerUp(SCREEN_HEIGHT/2, SCREEN_WIDTH/2, PowerUp.FLY);
+        
         int maxJ = SCREEN_WIDTH/Platform.DIMENSION;
         for(int i = 0; i < SCREEN_HEIGHT/PLAT_HEIGHT_DIST; i++) {
             for(int j = 0; j < maxJ; j++) {
@@ -86,6 +89,8 @@ public class DryIceClimber {
             Timer t = new Timer();
             t.scheduleAtFixedRate(new GameUpdater(), 100, 1000/30);
         }
+        
+        
     }
     
     public void paintGameObjects(Graphics2D g) {
@@ -107,6 +112,7 @@ public class DryIceClimber {
             for(Platform platform : platforms) {
                 platform.paint(g);
             }
+            power.paint(g);
         }
         
         if(!game) {
@@ -164,9 +170,13 @@ public class DryIceClimber {
             
             if(key == KeyEvent.VK_UP) {
                 a.setVY(-1);
+                up = true;
             }
             else if(key == KeyEvent.VK_DOWN) {
-                //a.setVY(5);
+                if(a.hasPower(PowerUp.FLY)) {
+                    a.setVY(1);
+                    down = true;
+                }
             }
             
             if(key == KeyEvent.VK_LEFT) {
@@ -180,9 +190,13 @@ public class DryIceClimber {
             if(twoPlayer) {
                 if(key == KeyEvent.VK_W) {
                     b.setVY(-1);
+                    w_key = true;
                 }
                 else if(key == KeyEvent.VK_S) {
-                    //b.setVY(5);
+                    if(b.hasPower(PowerUp.FLY)) {
+                        b.setVY(1);
+                        s_key = true;
+                    }
                 }
 
                 if(key == KeyEvent.VK_A) {
@@ -219,6 +233,25 @@ public class DryIceClimber {
                 }
             }
             
+            if(key == KeyEvent.VK_UP) {
+                up = false;
+                if(!down) {
+                    a.setVY(0);
+                }
+                else {
+                    a.setVY(1);
+                }
+            }
+            else if(key == KeyEvent.VK_DOWN) {
+                down = false;
+                if(!up) {
+                    a.setVY(0);
+                }
+                else {
+                    a.setVY(-1);
+                }
+            }
+            
             if(twoPlayer) {
                 if(key == KeyEvent.VK_A) {
                     a_key = false;
@@ -236,6 +269,25 @@ public class DryIceClimber {
                     }
                     else {
                         b.setVX(-1);
+                    }
+                }
+                
+                if(key == KeyEvent.VK_W) {
+                    w_key = false;
+                    if(!s_key) {
+                        b.setVY(0);
+                    }
+                    else {
+                        b.setVY(1);
+                    }
+                }
+                else if(key == KeyEvent.VK_S) {
+                    s_key = false;
+                    if(!w_key) {
+                        b.setVY(0);
+                    }
+                    else {
+                        b.setVY(-1);
                     }
                 }
             }
@@ -292,6 +344,11 @@ public class DryIceClimber {
                         }
                     }
             }
+            }
+            
+            a.checkCollisions(power);
+            if(twoPlayer) {
+                b.checkCollisions(power);
             }
             
             platforms.removeAll(platformsToRemove);

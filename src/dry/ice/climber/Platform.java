@@ -41,8 +41,12 @@ public class Platform extends GameObject {
             setState(BROKEN);
         }
         else if(getState() == BROKEN) {
-            dryIceGame.removePlatform(this);
+            remove();
         }
+    }
+    
+    public void remove() {
+        dryIceGame.removePlatform(this);
     }
     
 }
