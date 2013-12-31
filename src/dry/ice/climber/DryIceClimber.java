@@ -34,23 +34,27 @@ public class DryIceClimber {
     
     private int height;
     private boolean instructions, game;
+    private boolean firstGame;
     
     public DryIceClimber() {
-        
+        firstGame = true;
     }
     
     public void go() {
         up = down = left = right = w_key = a_key = s_key = d_key = false;
         
-        gameFrame = new JFrame("Dry Ice Climber");
-        gameFrame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
-        gameFrame.setLocationRelativeTo(null);
-        gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
-        surface = new GameSurface(this);
-        gameFrame.add(surface);
-        gameFrame.addKeyListener(new InputListener());
-        displayFont = new Font("Comic Sans MS", Font.BOLD, 36);
+        if(firstGame) {
+            gameFrame = new JFrame("Dry Ice Climber");
+            gameFrame.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
+            gameFrame.setLocationRelativeTo(null);
+            gameFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            gameFrame.setResizable(false);
+
+            surface = new GameSurface(this);
+            gameFrame.add(surface);
+            gameFrame.addKeyListener(new InputListener());
+            displayFont = new Font("Comic Sans MS", Font.BOLD, 36);
+        }
         
         a = new Climber("P1", 30, 50);
         b = new Climber("P2", 90, 50);
@@ -63,14 +67,15 @@ public class DryIceClimber {
             }
         }
         
-        gameFrame.setResizable(false);
         gameFrame.setVisible(true);
         height = 0;
         instructions = true;
         game = false;
         
-        Timer t = new Timer();
-        t.scheduleAtFixedRate(new GameUpdater(), 100, 1000/30);
+        if(firstGame) {
+            Timer t = new Timer();
+            t.scheduleAtFixedRate(new GameUpdater(), 100, 1000/30);
+        }
     }    
     
     public void paintGameObjects(Graphics2D g) {
@@ -96,7 +101,7 @@ public class DryIceClimber {
             String winner = a.y < b.y ? "Player One wins." : "Player Two wins.";
             if(a.y == b.y) winner = "Tie.";
             g.drawString(winner, SCREEN_WIDTH/4, SCREEN_HEIGHT/2);
-            g.drawString("#comicsans", SCREEN_WIDTH/4, 3*SCREEN_HEIGHT/4);
+            g.drawString("Press r to restart.", SCREEN_WIDTH/4, 3*SCREEN_HEIGHT/4);
         }
     }
     
@@ -147,6 +152,11 @@ public class DryIceClimber {
             else if(key == KeyEvent.VK_D) {
                 b.setVX(5);
                 d_key = true;
+            }
+            
+            if(!game && !instructions && key == KeyEvent.VK_R) {
+                firstGame = false;
+                go();
             }
         }
         
