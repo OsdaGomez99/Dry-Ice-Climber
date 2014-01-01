@@ -66,8 +66,10 @@ public class DryIceClimber {
         objects = new ArrayList<GameObject>();
         objectsToRemove = new ArrayList<GameObject>();
         
-        PowerUp power = new PowerUp(this, SCREEN_WIDTH/2, SCREEN_HEIGHT/4, PowerUp.FLY);
-        objects.add(power);
+        PowerUp jetpack = new PowerUp(this, SCREEN_WIDTH/2, SCREEN_HEIGHT/4, PowerUp.FLY);
+        PowerUp tallPowerUp = new PowerUp(this, SCREEN_WIDTH/2 + 50, SCREEN_HEIGHT/4, PowerUp.TALL);
+        objects.add(jetpack);
+        objects.add(tallPowerUp);
         
         int maxJ = SCREEN_WIDTH/Platform.DIMENSION;
         for(int i = 0; i < SCREEN_HEIGHT/PLAT_HEIGHT_DIST; i++) {

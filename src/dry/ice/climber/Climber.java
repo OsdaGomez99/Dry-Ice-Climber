@@ -28,6 +28,8 @@ public class Climber extends GameObject {
     
     private Font font;
     private Color color;
+    
+    public static final int DEFAULT_WIDTH = 40, DEFAULT_HEIGHT = 54;
         
     public Climber(DryIceClimber game, String t, int x, int y) {
         super(game, x,y);
@@ -35,8 +37,8 @@ public class Climber extends GameObject {
         powers = new HashMap<Integer, PowerUp>();
         
         setState(STANDING);
-        width = 40;
-        height = 54;
+        width = DEFAULT_WIDTH;
+        height = DEFAULT_HEIGHT;
         
         imageStates = new Image[5][];
         imageStates[STANDING] = new Image[1];
@@ -172,7 +174,7 @@ public class Climber extends GameObject {
         else if(p instanceof PowerUp) {
             PowerUp pow = (PowerUp) p;
             powers.put(pow.getType(), pow);
-            pow.activate();
+            pow.activate(this);
             pow.remove();
         }
     }
@@ -182,5 +184,27 @@ public class Climber extends GameObject {
             return powers.get(powerUp).isActivated();
         }
         else return false;
+    }
+    
+    public void gotPower(int type) {
+        switch(type) {
+            case PowerUp.FLY:
+                break;
+            case PowerUp.TALL:
+                width = 3 * DEFAULT_WIDTH;
+                height = 3 * DEFAULT_HEIGHT;
+                break;
+        }
+    }
+    
+    public void lostPower(int type) {
+        switch(type) {
+            case PowerUp.FLY:
+                break;
+            case PowerUp.TALL:
+                width = DEFAULT_WIDTH;
+                height = DEFAULT_HEIGHT;
+                break;
+        }
     }
 }

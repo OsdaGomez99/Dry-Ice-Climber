@@ -15,26 +15,29 @@ import javax.swing.ImageIcon;
  */
 public class PowerUp extends GameObject {
     
-    public static final int FLY = 0;
-    
-    private int type;
-    
+    public static final int FLY = 0, TALL = 1, NUMBER_OF_POWERUPS = 2;
+        
     private int clock;
-    public static final int fullTime = 30*5; // five seconds (30fps)
+    public static final int fullTime = 30*10; // ten seconds (30fps)
     private boolean activated;
+    private Climber climber;
     
     public static final int DIMENSION = 50;
     
     public PowerUp(DryIceClimber game, int x, int y, int type) {
         super(game, x, y);
-        this.type = type;
+        setState(type);
         width = height = DIMENSION;
-        imageStates = new Image[1][1];
+        imageStates = new Image[NUMBER_OF_POWERUPS][1];
+        
         imageStates[FLY][0] = new ImageIcon(this.getClass().getResource("jetpack.png")).getImage();
+        imageStates[TALL][0] = new ImageIcon(this.getClass().getResource("mushroom.jpg")).getImage();
     }
     
-    public void activate() {
+    public void activate(Climber climber) {
         activated = true;
+        this.climber = climber;
+        climber.gotPower(getState());
     }
     
     public int getClock() {
@@ -45,6 +48,7 @@ public class PowerUp extends GameObject {
         clock++;
         if(clock > fullTime) {
             activated = false;
+            climber.lostPower(getState());
         }
     }
     
@@ -53,6 +57,6 @@ public class PowerUp extends GameObject {
     }
     
     public int getType() {
-        return type;
+        return getState();
     }
 }
