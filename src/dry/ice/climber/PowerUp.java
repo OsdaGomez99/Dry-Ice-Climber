@@ -31,7 +31,7 @@ public class PowerUp extends GameObject {
         imageStates = new Image[NUMBER_OF_POWERUPS][1];
         
         imageStates[FLY][0] = new ImageIcon(this.getClass().getResource("jetpack.png")).getImage();
-        imageStates[TALL][0] = new ImageIcon(this.getClass().getResource("mushroom.jpg")).getImage();
+        imageStates[TALL][0] = new ImageIcon(this.getClass().getResource("mushroom.png")).getImage();
     }
     
     public void activate(Climber climber) {

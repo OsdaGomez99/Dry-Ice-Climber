@@ -15,7 +15,7 @@ import javax.swing.ImageIcon;
  *
  * @author jlhota16
  */
-public class Climber extends GameObject {
+public class Climber extends GamePerson {
     
     public static final int STANDING = 0, RUNNING_RIGHT = 1,
             RUNNING_LEFT = 2, JUMPING_RIGHT = 3, JUMPING_LEFT = 4;
@@ -23,7 +23,7 @@ public class Climber extends GameObject {
     public static final int JUMP_VEL = 20, RUN_VEL = 10;
     
     private HashMap<Integer, PowerUp> powers;
-    private boolean onPlatform;
+    //private boolean onPlatform;
     private String title;
     
     private Font font;
@@ -129,18 +129,15 @@ public class Climber extends GameObject {
     public void updatePhysics() {
         super.updatePhysics();
         
-        if(!onPlatform) {
-            if(!hasPower(PowerUp.FLY)) {
-                vy += DryIceClimber.GRAV_ACC;
-            }
+        if(hasPower(PowerUp.FLY)) {
+            vy -= DryIceClimber.GRAV_ACC;
         }
-        onPlatform = false;
-        
         for(PowerUp power : powers.values()) {
             power.updatePhysics();
         }
     }
     
+    @Override
     public void checkCollisions(GameObject p) {        
         if (y+height < p.y) return;
 	if (y > p.y+p.height) return;
@@ -191,6 +188,14 @@ public class Climber extends GameObject {
             powers.put(pow.getType(), pow);
             pow.activate(this);
             pow.remove();
+        }
+        else if(p instanceof Enemy) {
+            if(((Enemy)p).isAlive()) {
+                if(y < p.y && vy > 0) {
+                    ((Enemy)p).die();
+                    vy = -vy;
+                }
+            }
         }
     }
     

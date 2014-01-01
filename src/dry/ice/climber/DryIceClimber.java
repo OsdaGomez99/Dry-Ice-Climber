@@ -21,7 +21,7 @@ import java.util.TimerTask;
 public class DryIceClimber {
     
     public static final int SCREEN_WIDTH = 640, SCREEN_HEIGHT = 480,
-            GRAV_ACC = 2, SCROLL_VEL = 1, PLAT_HEIGHT_DIST = (int) ((((int)Math.pow(Climber.JUMP_VEL, 2))/(GRAV_ACC*2)) * 1.0f);
+            GRAV_ACC = 2, SCROLL_VEL = 1, PLAT_HEIGHT_DIST = (int) ((((int)Math.pow(Climber.JUMP_VEL, 2))/(GRAV_ACC*2)) * 1.1f);
     //15 is the jump velocity, 0.75 is a scaling factor to make jumping easier
     
     private JFrame gameFrame;
@@ -69,9 +69,9 @@ public class DryIceClimber {
         objectsToRemove = new ArrayList<GameObject>();
         
         //PowerUp jetpack = new PowerUp(this, SCREEN_WIDTH/2, SCREEN_HEIGHT/4, PowerUp.FLY);
-        PowerUp tallPowerUp = new PowerUp(this, SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/10, PowerUp.TALL);
+        //PowerUp tallPowerUp = new PowerUp(this, SCREEN_WIDTH/2 - 50, SCREEN_HEIGHT/10, PowerUp.TALL);
         //objects.add(jetpack);
-        objects.add(tallPowerUp);
+        //objects.add(tallPowerUp);
         
         int maxJ = SCREEN_WIDTH/Platform.DIMENSION;
         for(int i = 0; i < SCREEN_HEIGHT/PLAT_HEIGHT_DIST; i++) {
@@ -152,8 +152,6 @@ public class DryIceClimber {
             if(!game && !instructions && key == KeyEvent.VK_R) {
                 firstGame = false;
                 instructions = true;
-                System.out.println("restarting");
-                //go();
                 return;
             }
             
@@ -310,7 +308,7 @@ public class DryIceClimber {
     
     private class GameUpdater extends TimerTask {
         @Override
-        public void run() {
+        public synchronized void run() {
             surface.repaint();
             if(!game) return;
             
@@ -342,6 +340,15 @@ public class DryIceClimber {
                 
                 a.checkCollisions(object);
                 if(twoPlayer) b.checkCollisions(object);
+                
+                if(object instanceof Enemy) {
+                    object.updatePhysics();
+                    for(GameObject otherObject : objects) {
+                        if(otherObject instanceof Platform) {
+                            ((GamePerson)object).checkCollisions(otherObject);
+                        }
+                    }
+                }
             }
             
             for(GameObject object : objects) {
@@ -356,6 +363,14 @@ public class DryIceClimber {
                     for(int j = 0; j < SCREEN_WIDTH/Platform.DIMENSION; j++) {
                         if(Math.random()<prob) {
                             objects.add(new Platform(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION));
+                        }
+                        if(Math.random()<0.001f) {
+                            objects.add(new PowerUp(DryIceClimber.this, j*Platform.DIMENSION,
+                                    -Platform.DIMENSION-PowerUp.DIMENSION,
+                                    (int) Math.random()*PowerUp.NUMBER_OF_POWERUPS));
+                        }
+                        if(Math.random()<0.1f) {
+                            objects.add(new Enemy(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION-50));
                         }
                     }
                 }
