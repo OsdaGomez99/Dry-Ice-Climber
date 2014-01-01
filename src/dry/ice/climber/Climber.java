@@ -151,6 +151,21 @@ public class Climber extends GameObject {
             if(hasPower(PowerUp.FLY)) {
                 ((Platform)p).remove();
             }
+            else if(hasPower(PowerUp.TALL)) {
+                if(y+height<=p.y+p.height/2) {
+                    onPlatform = true;
+                    y = p.y - height;
+                    if(vy > 0) {
+                        vy = 0;
+                    }
+                    if(vx == 0) {
+                        setState(STANDING);
+                    }
+                }
+                else {
+                    ((Platform)p).damage();
+                }
+            }
             else {
                 if(y < p.y) {
                     onPlatform = true;
