@@ -42,6 +42,8 @@ public class DryIceClimber {
     public DryIceClimber() {
         firstGame = true;
         twoPlayer = true;
+        instructions = true;
+        game = false;
     }
     
     public void go() {
@@ -82,8 +84,8 @@ public class DryIceClimber {
         
         gameFrame.setVisible(true);
         height = 0;
-        instructions = true;
-        game = false;
+        //instructions = true;
+        //game = false;
         
         if(firstGame) {
             Timer t = new Timer();
@@ -149,7 +151,9 @@ public class DryIceClimber {
             
             if(!game && !instructions && key == KeyEvent.VK_R) {
                 firstGame = false;
-                go();
+                instructions = true;
+                System.out.println("restarting");
+                //go();
                 return;
             }
             
@@ -158,11 +162,17 @@ public class DryIceClimber {
                     twoPlayer = false;
                     instructions = false;
                     game = true;
+                    if(!firstGame) {
+                        go();
+                    }
                 }
                 else if(key == KeyEvent.VK_2) {
                     twoPlayer = true;
                     instructions = false;
                     game = true;
+                    if(!firstGame) {
+                        go();
+                    }
                 }
                 return;
             }

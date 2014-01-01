@@ -20,7 +20,7 @@ public class Climber extends GameObject {
     public static final int STANDING = 0, RUNNING_RIGHT = 1,
             RUNNING_LEFT = 2, JUMPING_RIGHT = 3, JUMPING_LEFT = 4;
     
-    public static final int JUMP_VEL = 20, RUN_VEL = 8;
+    public static final int JUMP_VEL = 20, RUN_VEL = 10;
     
     private HashMap<Integer, PowerUp> powers;
     private boolean onPlatform;
@@ -206,8 +206,8 @@ public class Climber extends GameObject {
             case PowerUp.FLY:
                 break;
             case PowerUp.TALL:
-                width = 3 * DEFAULT_WIDTH;
-                height = 3 * DEFAULT_HEIGHT;
+                width = 2 * DEFAULT_WIDTH;
+                height = 2 * DEFAULT_HEIGHT;
                 break;
         }
     }
