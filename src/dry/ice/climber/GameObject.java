@@ -51,6 +51,7 @@ public class GameObject extends Rectangle {
     public void updatePhysics() {
         if(x+vx >=0 && x+width+vx <= DryIceClimber.SCREEN_WIDTH) {
             x += vx;
+            int x = 3;
         }
         if(y+vy >= 0) {
             y += vy;
