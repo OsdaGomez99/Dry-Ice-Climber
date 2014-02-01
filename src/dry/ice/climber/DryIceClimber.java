@@ -20,7 +20,7 @@ import java.util.TimerTask;
  */
 public class DryIceClimber {
     
-    public static final int SCREEN_WIDTH = 640, SCREEN_HEIGHT = 480,
+    public static final int FPS = 30, SCREEN_WIDTH = 640, SCREEN_HEIGHT = 480,
             GRAV_ACC = 2, SCROLL_VEL = 1, PLAT_HEIGHT_DIST = (int) ((((int)Math.pow(Climber.JUMP_VEL, 2))/(GRAV_ACC*2)) * 1.1f);
     //15 is the jump velocity, 0.75 is a scaling factor to make jumping easier
     
@@ -76,9 +76,7 @@ public class DryIceClimber {
         int maxJ = SCREEN_WIDTH/Platform.DIMENSION;
         for(int i = 0; i < SCREEN_HEIGHT/PLAT_HEIGHT_DIST; i++) {
             for(int j = 0; j < maxJ; j++) {
-                if(i != j) {
-                    objects.add(new Platform(this, j*Platform.DIMENSION, (i)*PLAT_HEIGHT_DIST));
-                }
+                objects.add(new Platform(this, j*Platform.DIMENSION, (i)*PLAT_HEIGHT_DIST));
             }
         }
         
@@ -89,7 +87,7 @@ public class DryIceClimber {
         
         if(firstGame) {
             Timer t = new Timer();
-            t.scheduleAtFixedRate(new GameUpdater(), 100, 1000/30);
+            t.scheduleAtFixedRate(new GameUpdater(), 100, 1000/FPS);
         }
         
         
@@ -364,10 +362,10 @@ public class DryIceClimber {
                         if(Math.random()<prob) {
                             objects.add(new Platform(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION));
                         }
-                        if(Math.random()<0.001f) {
+                        if(Math.random()<0.1f) {
                             objects.add(new PowerUp(DryIceClimber.this, j*Platform.DIMENSION,
                                     -Platform.DIMENSION-PowerUp.DIMENSION,
-                                    (int) Math.random()*PowerUp.NUMBER_OF_POWERUPS));
+                                    (int) (Math.random()*PowerUp.NUMBER_OF_POWERUPS)));
                         }
                         if(Math.random()<0.1f) {
                             objects.add(new Enemy(DryIceClimber.this, j*Platform.DIMENSION, -Platform.DIMENSION-50));
