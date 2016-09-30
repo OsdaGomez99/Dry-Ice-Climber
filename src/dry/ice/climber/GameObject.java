@@ -13,23 +13,31 @@ import java.awt.Rectangle;
  * @author jlhota16
  */
 public class GameObject extends Rectangle {
-    protected static Image[][] imageStates;
+    protected Image[][] imageStates;
     private int state, frame;
     
     protected int vx, vy;
     
-    public GameObject(int x_coord, int y_coord) {
+    private DryIceClimber diGame;
+    
+    public GameObject(DryIceClimber game, int x_coord, int y_coord) {
         state = 0;
         frame = 0;
         x = x_coord;
         y = y_coord;
         vx = vy = 0;
         frame = 0;
+        
+        diGame = game;
     }
     
     public synchronized void setState(int s) {
         frame = 0;
         state = s;
+    }
+    
+    public int getState() {
+        return state;
     }
     
     public void setVX(int new_vx) {
@@ -41,13 +49,21 @@ public class GameObject extends Rectangle {
     }
     
     public void updatePhysics() {
-        x += vx;
-        y += vy;
-        vy++;
+        if(x+vx >=0 && x+width+vx <= DryIceClimber.SCREEN_WIDTH) {
+            x += vx;
+            int x = 3;
+        }
+        if(y+vy >= 0) {
+            y += vy;
+        }
     }
     
     public void paint(Graphics2D g) {
-        g.drawImage(imageStates[state][frame], x, y, null);
+        g.drawImage(imageStates[state][frame], x, y, width, height, null);
         frame = (frame+1) % imageStates[state].length;
+    }
+    
+    public void remove() {
+        diGame.removeObject(this);
     }
 }
